@@ -1,0 +1,140 @@
+﻿@page "/"
+@inject HttpClient Http
+@inject Settings Settings
+
+<div class="container-fluid vh-100 px-0 overflow-x-hidden">
+  <div class="row vh-100">
+    <div class="col-2 text-center">
+        <div class="btn-group-vertical">
+            @foreach(DateTime date in allDays) {
+                <button class="btn btn-primary rounded mb-1" type="button" onclick="@(() => { SetShownArticles(date.Day); })">
+                    @date.Day. @MonthToString(date.Month)
+                </button>
+            }
+        </div>  
+    </div>
+    <div class="col-8 vh-100 px-0">
+      <div class="d-flex flex-column vh-100">
+        <div class="flex-grow-1">
+          @foreach(Article article in shownArticles)
+          {
+              <div class="rounded border mb-2">
+                <div class="row">
+                  <div class="col-2">
+                    <img class="rounded float-start m-2" src="@article.ArticleThumbnail"/>
+                  </div>
+                  <div class="col-8 position-relative mt-2">
+                    <div class="row">
+                      @article.ArticleTitle
+                    </div>
+                    <div class="row position-absolute bottom-0 mb-2">
+                      Comments: @article.ThreadComments
+                    </div>
+                  </div>
+                  <div class="col-2 float-end">
+                    <div class="btn-group-vertical float-end m-2">
+                      <a class="btn btn-primary rounded mb-1" href="@article.ArticleUrl" target="_blank">
+                        Article
+                      </a>
+                      <a class="btn btn-primary rounded" href="@article.ThreadUrl" target="_blank">
+                        Thread
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+@code {
+    public List<Article> shownArticles { get; set; }
+    public List<Article> allArticles { get; set; }
+    public List<DateTime> allDays { get; set; }
+    public int day { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        allArticles = new List<Article>();
+        shownArticles = new List<Article>();
+        allDays = new List<DateTime>();
+
+        var articles = await Http.GetFromJsonAsync<Article[]>(Settings.API_URL + "GetArticles");
+
+        if (articles.Length > 0)
+        {
+            allArticles = articles.OrderByDescending(article => article.ThreadTimestamp).ToList();
+
+            DateTime currentDateTime = GetCurrentDateTime(articles);
+            day = currentDateTime.Day;
+
+            SetShownArticles(day);
+
+            allDays = GetDays();
+        }
+    }
+
+    private void SetShownArticles(int day)
+    {
+        shownArticles = allArticles.Where<Article>(article => article.ThreadTimestamp.Day == day).ToList();
+        shownArticles = shownArticles.OrderByDescending(article => article.ThreadComments).ToList();
+        InvokeAsync(StateHasChanged);
+    }
+
+    private List<DateTime> GetDays()
+    {
+        List<DateTime> days = new List<DateTime>();
+
+        var articles = allArticles.DistinctBy(article => article.ThreadTimestamp.Day).ToList();
+
+        foreach(Article article in articles)
+        {
+            days.Add(article.ThreadTimestamp);
+        }
+
+        return days;
+    }
+
+    private DateTime GetCurrentDateTime(Article[] articles) 
+    {
+        var temp = articles.OrderByDescending(article => article.ThreadTimestamp).ToList();
+        return temp[0].ThreadTimestamp;
+    }
+
+    private string MonthToString(int month)
+    {
+        switch (month)
+        {
+            case 1:
+                return "January";
+            case 2:
+                return "February";
+            case 3:
+                return "March";
+            case 4:
+                return "April";
+            case 5:
+                return "May";
+            case 6:
+                return "June";
+            case 7:
+                return "July";
+            case 8:
+                return "August";
+            case 9:
+                return "September";
+            case 10:
+                return "October";
+            case 11:
+                return "November";
+            case 12:
+                return "December";
+            default:
+                return "Failed";
+        }
+    }
+}
