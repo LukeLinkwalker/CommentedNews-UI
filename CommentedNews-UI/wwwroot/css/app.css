@@ -17,6 +17,38 @@
     background-color: #0D6EFD;
 }
 
+.w-100 {
+    width: 100%;
+}
+
+@media (max-width: 1199px) {
+    .image-container {
+        display: none;
+    }
+
+    .article-horizontal-nav {
+        display: none;
+    }
+
+    .article-vertical-nav {
+        display: block;
+    }
+}
+
+@media (min-width: 1200px) {
+    .image-container {
+        display: block;
+    }
+
+    .article-horizontal-nav {
+        display: block;
+    }
+
+    .article-vertical-nav {
+        display: none;
+    }
+}
+
 h1:focus {
     outline: none;
 }
