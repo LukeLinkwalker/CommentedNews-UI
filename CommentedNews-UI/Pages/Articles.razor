@@ -133,7 +133,7 @@
 
         var tmpArticles = articles.DistinctBy(article => article.ThreadTimestamp.Day).ToList();
 
-        foreach(Article article in articles)
+        foreach(Article article in tmpArticles)
         {
             days.Add(article.ThreadTimestamp);
         }
