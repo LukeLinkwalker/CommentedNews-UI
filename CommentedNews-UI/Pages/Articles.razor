@@ -3,86 +3,89 @@
 @inject Settings Settings
 
 <div class="container-fluid vh-100 px-0 overflow-x-hidden">
-   <div class="row">
-       <div class="col-8 offset-2">
-        <!-- Vertical Day Selection -->
-        <div class="btn-group text-center article-vertical-nav">
-            <button type="button" class="btn btn-primary dropdown-toggle w-100" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Day
-            </button>
-            <div class="dropdown-menu w-100">
-                    @foreach(DateTime date in allDays)
+    <div class="row">
+        <div class="col-8 offset-2">
+            <!-- Vertical Day Selection -->
+            <div class="btn-group text-center article-vertical-nav">
+                <button type="button" class="btn btn-primary dropdown-toggle w-100" data-bs-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                    Day
+                </button>
+                <div class="dropdown-menu w-100">
+                    @foreach (DateTime date in allDays)
                     {
                         <a class="dropdown-item" href="#" onclick="@(() => { SetShownArticles(date.Day); })">
                             @date.Day. @MonthToString(date.Month)
                         </a>
                     }
+                </div>
             </div>
         </div>
-       </div>
-   </div>
-  <div class="row vh-100">
-    <div class="col-2 text-center">
-        <!-- Horizontal Day Selection -->
-        <div class="btn-group-vertical article-horizontal-nav">
-            @foreach(DateTime date in allDays) {
-                <button class="btn btn-primary rounded mb-1" type="button" onclick="@(() => { SetShownArticles(date.Day); })">
-                    @date.Day. @MonthToString(date.Month)
-                </button>
-            }
-        </div>
-        
     </div>
-    <div class="col-8 vh-100 px-0">
-      <div class="d-flex flex-column vh-100">
-        <div class="flex-grow-1 overflow-y-scroll">
-          @foreach(Article article in shownArticles)
-          {
-              <div class="rounded border m-2">
-                <div class="row">
-                  <div class="col-12 col-xl-10 position-relative mt-2 text-nowrap"> 
-                      <div class="image-container">
-                        <img class="rounded float-start mx-2" src="@article.ArticleThumbnail" />
-                      </div>
+    <div class="row vh-100">
+        <div class="col-2 text-center">
+            <!-- Horizontal Day Selection -->
+            <div class="btn-group-vertical article-horizontal-nav">
+                @foreach (DateTime date in allDays)
+                {
+                    <button class="btn btn-primary rounded mb-1" type="button" onclick="@(() => { SetShownArticles(date.Day); })">
+                        @date.Day. @MonthToString(date.Month)
+                    </button>
+                }
+            </div>
 
-                      <div class="px-3">
-                        <div class="row text-wrap">
-                          @article.ArticleTitle
-                        </div>
-                        <div class="row mb-2">
-                          Comments: @article.ThreadComments
-                        </div>  
-                      </div>
-                  </div>
-                  <!-- Horizontal Article Nav -->
-                  <div class="article-horizontal-nav col-xl-2 float-end">
-                    <div class="btn-group-vertical float-end m-2">
-                      <a class="btn btn-primary rounded mb-1" href="@article.ArticleUrl" target="_blank">
-                        Article
-                      </a>
-                      <a class="btn btn-primary rounded" href="@article.ThreadUrl" target="_blank">
-                        Thread
-                      </a>
-                    </div>
-                  </div>
-                </div>
-                <!-- Vertical Article Nav -->
-                <div class="row article-vertical-nav">
-                    <div class="col-12 px-3 p-2">
-                        <a class="btn btn-primary">
-                            Article
-                        </a>
-                        <a class="btn btn-primary">
-                            Thread
-                        </a>
-                    </div>
-                </div>
-              </div>
-          }
         </div>
-      </div>
+        <div class="col-8 vh-100 px-0">
+            <div class="d-flex flex-column vh-100">
+                <div class="flex-grow-1 overflow-y-scroll">
+                    @foreach (Article article in shownArticles)
+                    {
+                        <div class="rounded border m-2">
+                            <div class="row">
+                                <!-- Article Listing -->
+                                <div class="col-12 col-xl-10 position-relative mt-2 text-nowrap">
+                                    <div class="image-container">
+                                        <img class="rounded float-start mx-2" src="@article.ArticleThumbnail" />
+                                    </div>
+                                    <div class="px-3">
+                                        <div class="row text-wrap">
+                                            @article.ArticleTitle
+                                        </div>
+                                        <div class="row mb-2">
+                                            Comments: @article.ThreadComments
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Horizontal Article Nav -->
+                                <div class="article-horizontal-nav col-xl-2 float-end">
+                                    <div class="btn-group-vertical float-end m-2">
+                                        <a class="btn btn-primary rounded mb-1" href="@article.ArticleUrl" target="_blank">
+                                            Article
+                                        </a>
+                                        <a class="btn btn-primary rounded" href="@article.ThreadUrl" target="_blank">
+                                            Thread
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Vertical Article Nav -->
+                            <div class="row article-vertical-nav">
+                                <div class="col-12 px-3 p-2">
+                                    <a class="btn btn-primary">
+                                        Article
+                                    </a>
+                                    <a class="btn btn-primary">
+                                        Thread
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 
 
@@ -104,12 +107,12 @@
         {
             allArticles = articles.OrderByDescending(article => article.ThreadTimestamp).ToList();
 
-            DateTime currentDateTime = GetCurrentDateTime(articles);
+            DateTime currentDateTime = GetMostRecentDateTime(articles);
             day = currentDateTime.Day;
 
             SetShownArticles(day);
 
-            allDays = GetDays();
+            allDays = GetDays(allArticles);
         }
     }
 
@@ -120,11 +123,15 @@
         InvokeAsync(StateHasChanged);
     }
 
-    private List<DateTime> GetDays()
+    /// <summary>
+    /// Gets the articles that first have a distinct ThreadTimestamp. 
+    /// It then returns a list of the distinct DateTime objects the articles have.
+    /// </summary>
+    private List<DateTime> GetDays(List<Article> articles)
     {
         List<DateTime> days = new List<DateTime>();
 
-        var articles = allArticles.DistinctBy(article => article.ThreadTimestamp.Day).ToList();
+        var tmpArticles = articles.DistinctBy(article => article.ThreadTimestamp.Day).ToList();
 
         foreach(Article article in articles)
         {
@@ -134,7 +141,11 @@
         return days;
     }
 
-    private DateTime GetCurrentDateTime(Article[] articles) 
+    /// <summary>
+    /// Sorts the articles by DateTime in descending order meaning most recent is first. 
+    /// It then returns the DateTime object from the first article in the list.
+    /// </summary>
+    private DateTime GetMostRecentDateTime(Article[] articles) 
     {
         var temp = articles.OrderByDescending(article => article.ThreadTimestamp).ToList();
         return temp[0].ThreadTimestamp;
