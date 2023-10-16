@@ -6,4 +6,4 @@ This UI is made with Blazor + Bootstrap and gets the required data by making a H
 This UI is also automatically deployed to the Azure Cloud.
 
 Screenshot:
-![til](https://i.imgur.com/AKaB7wW.jpg)
+![til](https://i.imgur.com/omVHDO3.jpg)
