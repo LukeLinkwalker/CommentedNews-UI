@@ -89,7 +89,7 @@
         shownArticles = new List<Article>();
         allDays = new List<DateTime>();
 
-        var articles = await Http.GetFromJsonAsync<Article[]>(Settings.API_URL + "GetArticles");
+        var articles = await Http.GetFromJsonAsync<Article[]>(Settings.API_URL + "articles");
 
         if (articles.Length > 0)
         {
