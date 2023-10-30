@@ -79,35 +79,26 @@
 
 @code {
     public List<Article> shownArticles { get; set; }
-    public List<Article> allArticles { get; set; }
     public List<DateTime> allDays { get; set; }
     public int day { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        allArticles = new List<Article>();
         shownArticles = new List<Article>();
         allDays = new List<DateTime>();
 
-        var articles = await Http.GetFromJsonAsync<Article[]>(Settings.API_URL + "articles");
+        allDays = await Http.GetFromJsonAsync<List<DateTime>>($"{Settings.API_URL}days/7");
 
-        if (articles.Length > 0)
+        if(allDays.Count > 0)
         {
-            allArticles = articles.OrderByDescending(article => article.ThreadTimestamp).ToList();
-
-            DateTime currentDateTime = GetMostRecentDateTime(articles);
-            day = currentDateTime.Day;
-
-            SetShownArticles(day);
-
-            allDays = GetDays(allArticles);
+            SetShownArticles(allDays[0].Day);
         }
     }
 
-    private void SetShownArticles(int day)
+    private async void SetShownArticles(int day)
     {
-        shownArticles = allArticles.Where<Article>(article => article.ThreadTimestamp.Day == day).ToList();
-        shownArticles = shownArticles.OrderByDescending(article => article.ThreadComments).ToList();
+        var articles = await Http.GetFromJsonAsync<Article[]>($"{Settings.API_URL}articles/{day}");
+        shownArticles = articles.OrderByDescending(article => article.ThreadComments).ToList();
         InvokeAsync(StateHasChanged);
     }
 
@@ -127,16 +118,6 @@
         }
 
         return days;
-    }
-
-    /// <summary>
-    /// Sorts the articles by DateTime in descending order meaning most recent is first. 
-    /// It then returns the DateTime object from the first article in the list.
-    /// </summary>
-    private DateTime GetMostRecentDateTime(Article[] articles) 
-    {
-        var temp = articles.OrderByDescending(article => article.ThreadTimestamp).ToList();
-        return temp[0].ThreadTimestamp;
     }
 
     private string MonthToString(int month)
