@@ -21,6 +21,15 @@
     width: 100%;
 }
 
+.no-thumbnail {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 142px;
+    height: 78px;
+    background-color: #CCC;
+}
+
 @media (max-width: 1199px) {
     .image-container {
         display: none;

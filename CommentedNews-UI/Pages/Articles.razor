@@ -33,7 +33,16 @@
                                 <!-- Article Listing -->
                                 <div class="col-12 col-xl-10 position-relative mt-2 text-nowrap">
                                     <div class="image-container">
-                                        <img class="rounded float-start mx-2" src="@article.ArticleThumbnail" />
+                                        @if(article.ArticleThumbnail != "default")
+                                        {
+                                            <img class="rounded float-start mx-2" src="@article.ArticleThumbnail" />
+                                        }
+                                        else
+                                        {
+                                            <div class="rounded float-start fw-bold mx-2 no-thumbnail">
+                                                No Image
+                                            </div>
+                                        }
                                     </div>
                                     <div class="px-3">
                                         <div class="row text-wrap">
