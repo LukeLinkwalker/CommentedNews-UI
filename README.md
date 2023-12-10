@@ -5,5 +5,7 @@ This is the UI part of a broader project. The purpose of the broader project is 
 This UI is made with Blazor + Bootstrap and gets the required data by making a HTTP request to the API function defined in [CommentedNews-Functions](https://github.com/LukeLinkwalker/CommentedNews-Functions).
 This UI is also automatically deployed to the Azure Cloud.
 
+[Live Demo](https://zealous-flower-0d501dd03.3.azurestaticapps.net/)
+
 Screenshot:
 ![til](https://i.imgur.com/omVHDO3.jpg)
