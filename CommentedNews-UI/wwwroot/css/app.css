@@ -28,6 +28,7 @@
     width: 142px;
     height: 78px;
     background-color: #CCC;
+    content: "No Image";
 }
 
 @media (max-width: 1199px) {

@@ -2,9 +2,9 @@
 @inject HttpClient Http
 @inject Settings Settings
 
-<div class="container-fluid vh-100 px-0 overflow-hidden">
+<div class="container-fluid vh-100 px-0 overflow-y-scroll">
     <div class="row">
-        <div class="col-8 offset-2">
+        <div class="col-10 offset-1">
             <!-- Vertical Day Selection -->
             <div class="btn-group text-center w-100">
                 <button type="button" class="btn btn-primary dropdown-toggle w-100" data-bs-toggle="dropdown"
@@ -22,65 +22,61 @@
             </div>
         </div>
     </div>
-    <div class="row vh-100">
-        <div class="col-8 offset-2 vh-100 px-0">
-            <div class="d-flex flex-column vh-100">
-                <div class="flex-grow-1 overflow-y-scroll">
-                    @foreach (Article article in shownArticles)
-                    {
-                        <div class="rounded border m-2">
-                            <div class="row">
-                                <!-- Article Listing -->
-                                <div class="col-12 col-xl-10 position-relative mt-2 text-nowrap">
-                                    <div class="image-container">
-                                        @if(article.ArticleThumbnail != "default")
-                                        {
-                                            <img class="rounded float-start mx-2" src="@article.ArticleThumbnail" />
-                                        }
-                                        else
-                                        {
-                                            <div class="rounded float-start fw-bold mx-2 no-thumbnail">
-                                                No Image
-                                            </div>
-                                        }
+    <div class="row">
+        <div class="col-10 offset-1">
+            @foreach (Article article in shownArticles)
+            {
+                <div class="rounded border m-2">
+                    <div class="row">
+                        <!-- Article Listing -->
+                        <div class="col-12 col-xl-10 position-relative mt-2 text-nowrap">
+                            <div class="image-container">
+                                @if (article.ArticleThumbnail != "default")
+                                {
+                                    <img class="rounded float-start mx-2" src="@article.ArticleThumbnail" />
+                                }
+                                else
+                                {
+                                    <div class="rounded float-start fw-bold mx-2 no-thumbnail">
+                                        No Image
                                     </div>
-                                    <div class="px-3">
-                                        <div class="row text-wrap">
-                                            @article.ArticleTitle
-                                        </div>
-                                        <div class="row mb-2">
-                                            Comments: @article.ThreadComments
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Horizontal Article Nav -->
-                                <div class="article-horizontal-nav col-xl-2 float-end">
-                                    <div class="btn-group-vertical float-end m-2">
-                                        <a class="btn btn-primary rounded mb-1" href="@article.ArticleUrl" target="_blank">
-                                            Article
-                                        </a>
-                                        <a class="btn btn-primary rounded" href="@article.ThreadUrl" target="_blank">
-                                            Thread
-                                        </a>
-                                    </div>
-                                </div>
+                                }
                             </div>
-                            <!-- Vertical Article Nav -->
-                            <div class="row article-vertical-nav">
-                                <div class="col-12 px-3 p-2">
-                                    <a class="btn btn-primary">
-                                        Article
-                                    </a>
-                                    <a class="btn btn-primary">
-                                        Thread
-                                    </a>
+                            <div class="px-3">
+                                <div class="row text-wrap">
+                                    @article.ArticleTitle
+                                </div>
+                                <div class="row mb-2">
+                                    Comments: @article.ThreadComments
                                 </div>
                             </div>
                         </div>
-                    }
+
+                        <!-- Horizontal Article Nav -->
+                        <div class="article-horizontal-nav col-xl-2 float-end">
+                            <div class="btn-group-vertical float-end m-2">
+                                <a class="btn btn-primary rounded mb-1" href="@article.ArticleUrl" target="_blank">
+                                    Article
+                                </a>
+                                <a class="btn btn-primary rounded" href="@article.ThreadUrl" target="_blank">
+                                    Thread
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Vertical Article Nav -->
+                    <div class="row article-vertical-nav">
+                        <div class="col-12 px-3 p-2">
+                            <a class="btn btn-primary">
+                                Article
+                            </a>
+                            <a class="btn btn-primary">
+                                Thread
+                            </a>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            }
         </div>
     </div>
 </div>
